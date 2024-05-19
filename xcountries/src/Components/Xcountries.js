@@ -1,10 +1,38 @@
-import styles from "./Xcountries.module.css"
 
-export default function Xcountries(){
-    
+import { useEffect, useState } from "react"; 
+import axios from 'axios';
+import styles from "./Xcountries.module.css";
+
+
+export default  function Xcountries(){
+    const [countries , setCountries]=useState([]);
+    useEffect(()=>{
+        fetchData();
+    },[]
+);
+const fetchData = async ()=>{
+    try{
+     const data =await axios.get("https://restcountries.com/v3.1/all");
+      setCountries(data.data)
+      console.log(data.data)
+    }
+    catch(error){
+        console.log("error fetching data: ", error);
+
+    }
+}
     return (
-        <>
-xcountries
-        </>
-    )
+        <div className={styles.parent}>
+        {countries.map((country) => (
+          <div className={styles.card} key={country.cca3}>
+            <img
+              className={styles.flag}
+              src={country.flags.png}
+              alt={country.name.common}
+            />
+            <h5 className={styles.name}>{country.name.common}</h5>
+          </div>
+        ))}
+      </div>
+    );
 }
